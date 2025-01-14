@@ -1,0 +1,33 @@
+voting application
+a user can give a vote to the given sets of candidates
+
+models?
+routes?
+ voting app function
+  1. user sign in/signup
+  2.list of candidates
+  3. user can give only one vote
+  4. route shows the list of candidates and live score
+  5. addhar card
+  6. one admin 
+  7. user can change their password
+  8. login with addhar card only
+  9. admin cant vote
+
+  **************************************************************************
+  routes
+   user
+      /signup: POST create a new user
+      /login: POST log in existing acc.
+   voting
+       /candidates: GET list of candidates
+       /vote/candidates: POST vote for a specific candidates
+   vote counts
+       /vote/counts: GET- count the vote in sorted array
+   user profiles
+        /profiles: GET- user profiles
+        /profiles/password :PUT -update password
+    admin
+       /candidates: POST - new candidates
+       /candidates/:candidates: put- update an existing candidates
+       /candidates/candidates: DELETE- delete an candidates  
