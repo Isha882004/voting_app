@@ -106,12 +106,12 @@ router.put('/profile/password', jwtauthmidddle, async (req, res) => {
         const user = await User.findById(userid);
 
         // If user does not exist or password does not match, return error
-        if (!user || !(await user.comparePassword(currentPassword))) {
+        if (!user || !(await user.comparepassword(currentpassword))) {
             return res.status(401).json({ error: 'Invalid current password' });
         }
 
         // Update the user's password
-        user.password = newPassword;
+        user.password = newpassword;
         await user.save();
 
         console.log('password updated');
