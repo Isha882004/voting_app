@@ -4,11 +4,16 @@ const jwtauthmidddle = (req, res, next) => {
 
     // first check request headers has authorization or not
     const authorization = req.headers.authorization
-    if(!authorization) return res.status(401).json({ error: 'Token Not Found' });
-
-    // Extract the jwt token from the request headers
+    //if(!authorization) return res.status(401).json({ error: 'Token Not Found' });
+     
+    if (!authorization || !authorization.startsWith('Bearer ')) {
+        console.err('authoriztion header is issing');
+        return res.status(401).json({ message: 'No token provided or incorrect format' });
+    }
+    // Extract the jwt token from the request heade                     rs
     const token = req.headers.authorization.split(' ')[1];
-    if(!token) return res.status(401).json({ error: 'Unauthorized' });
+    console.log('extracted token');
+    if(!token) return res.status(401).json({ error: 'Unauthorized token missing' });
 
     try{
         // Verify the JWT token
@@ -19,15 +24,19 @@ const jwtauthmidddle = (req, res, next) => {
         next();
     }catch(err){
         console.error(err);
-        res.status(401).json({ error: 'Invalid token' });
+        res.status(401).json({ error: 'Invalid token',details: err.message });
     }
-}
+};
 
 
 // Function to generate JWT token
 const generatetoken= (userdata) => {
     // Generate a new JWT token using user data
-    return jwt.sign(userdata, process.env.JWT_SECRET, {expiresIn: '1h'});
+   try{ return jwt.sign(userdata, process.env.JWT_SECRET, {expiresIn: '1h'});
 }
+catch (err) {
+    console.error('Token Generation Error:', err.message);
+    throw new Error('Token generation failed');
+}};
 
 module.exports = {jwtauthmidddle, generatetoken};

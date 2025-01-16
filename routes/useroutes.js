@@ -61,18 +61,18 @@ router.post('/login', async(req, res) => {
         const user = await User.findOne({aadharcardnumber: aadharcardnumber});
 
         // If user does not exist or password does not match, return error
-        if( !user || !(await user.comparePassword(password))){
+        if( !user || !(await user.comparepassword(password))){
             return res.status(401).json({error: 'Invalid Aadhar Card Number or Password'});
         }
 
-        // generate Token 
+        // generate Token  
         const payload = {
-            id: user.id,
-        }
+            id: user.id
+        };
         const token = generatetoken(payload);
 
         // resturn token as response
-        res.json({token})
+        res.json({token});
     }catch(err){
         console.error(err);
         res.status(500).json({ error: 'Internal Server Error' });

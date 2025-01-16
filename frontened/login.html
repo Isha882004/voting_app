@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Voting App</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-image: url('signupimg.webp'); /* Replace with your image URL */
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            color: #fff;
+        }
+        .container {
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 30px;
+            background: rgba(0, 0, 0, 0.7); /* Semi-transparent background */
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+         .text-centre {
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 24px;
+            font-weight: bold;
+        }
+        .form-label {
+            font-weight: bold;
+        }
+        .form-control {
+            margin-bottom: 15px;
+            background: rgba(255, 255, 255, 0.8);
+            color: #000;
+        }
+        .form-control:focus {
+            background: #fff;
+        }
+        .btn-primary {
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2 class="text-center">Login</h2>
+    <form id="loginForm">
+        <div class="mb-3">
+            <label for="aadharcardnumber" class="form-label">Aadhar Card Number</label>
+            <input type="text" class="form-control" id="aadharcardnumber" required>
+        </div>
+        <div class="mb-3">
+            <label for="password" class="form-label">Password</label>
+            <input type="password" class="form-control" id="password" required>
+        </div>
+        <button type="submit" class="btn btn-primary">Login</button>
+    </form>
+    <div id="error-message" class="alert alert-danger " style="display: none;"></div>
+    <div id="success-message" class="alert alert-success " style="display: none;"></div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    // Login form handler
+    document.getElementById("loginForm").addEventListener("submit", function(event) {
+        event.preventDefault();
+
+        const aadharcardnumber = document.getElementById("aadharcardnumber").value;
+        const password = document.getElementById("password").value;
+
+        // Send POST request to backend for login
+        fetch('http://localhost:3000/user/login', {  // Backend URL with port 3000
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ aadharcardnumber, password }),
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.token) {
+                // Store token and redirect to dashboard
+                localStorage.setItem('authToken', data.token);
+                window.location.href = 'profile.html';  // Update this with your dashboard page URL
+            } else {
+                // Show error message
+                document.getElementById("error-message").textContent = data.error;
+                document.getElementById("error-message").style.display = 'block';
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            document.getElementById("error-message").textContent = 'An error occurred. Please try again later.';
+            document.getElementById("error-message").style.display = 'block';
+        });
+    });
+</script>
+
+</body>
+</html>
