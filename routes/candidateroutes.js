@@ -44,7 +44,10 @@ const checkmiddle = async (userid) => {
     try{
         if(!(await checkmiddle(req.user.id)))
             return res.status(403).json({message:'user is not admin role no updation'})
-        
+        const candidate = await Candidate.find({}, 'name party age _id');
+
+        // Return the list of candidates
+        res.status(200).json(candidate);
         const candidateid=req.params.candidateid;
         const updatecandidate=req.body;
         const response =await Candidate.findByIdAndUpdate(candidateid,updatecandidate,{
@@ -54,13 +57,13 @@ const checkmiddle = async (userid) => {
         if(!response){
             return res.status(404).json({error:'candidate data not update'});
         }
-        console.log('updatde');
+        console.log('updatde',response);
         res.status(200).json(response);
      } catch(err){
         console.log(err);
-        res.status(500).json({eror:'message not sneed'});
+        res.status(500).json({eror:'internal server error'});
      }
-  })
+  });
   router.delete('/:candidateid',jwtauthmidddle,async(req,res)=>{
     try{
         if(!checkmiddle(req.user.id))
@@ -91,7 +94,7 @@ const checkmiddle = async (userid) => {
                 count: data.votecount
             }
         });
-
+           console.log('mapped voter record',voteRecord);
         return res.status(200).json(voteRecord);
     }catch(err){
         console.log(err);
@@ -109,6 +112,7 @@ const checkmiddle = async (userid) => {
     try{
         // Find the Candidate document with the specified candidateid
         const candidate = await Candidate.findById(candidateid);
+        console.log(candidate,'this is id');
         if(!candidate){
             return res.status(404).json({ message: 'Candidate not found' });
         }
@@ -117,8 +121,8 @@ const checkmiddle = async (userid) => {
         if(!user){
             return res.status(404).json({ message: 'user not found' });
         }
-        if(user.role == 'admin'){
-            return res.status(403).json({ message: 'admin is not allowed'});
+        if(user.role === 'admin'){
+            return res.status(403).json({ message: 'admin is not allowed to give vote'});
         }
         if(user.isvoted){
             return res.status(400).json({ message: 'You have already voted' });
@@ -146,7 +150,7 @@ const checkmiddle = async (userid) => {
 router.get('/', async (req, res) => {
     try {
         // Find all candidates and select only the name and party fields, excluding _id
-        const candidates = await Candidate.find({}, 'name party -_id');
+        const candidates = await Candidate.find({}, 'name party age _id votes votecount');
 
         // Return the list of candidates
         res.status(200).json(candidates);

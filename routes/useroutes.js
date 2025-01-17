@@ -83,8 +83,11 @@ router.post('/login', async(req, res) => {
 router.get('/profile', jwtauthmidddle, async (req, res) => {
     try{
         const userdata = req.user;
+        console.log(userdata,'this is user')
         const userid = userdata.id;
+        console.log('user id',userid)
         const user = await User.findById(userid);
+        console.log(user,'this is user')
         res.status(200).json({user});
     }catch(err){
         console.error(err);
@@ -96,7 +99,7 @@ router.put('/profile/password', jwtauthmidddle, async (req, res) => {
     try {
         const userid = req.user.id; // Extract the id from the token
         const { currentpassword, newpassword } = req.body; // Extract current and new passwords from request body
-
+        console.log(currentpassword,'this is new password',newpassword)
         // Check if currentPassword and newPassword are present in the request body
         if (!currentpassword || !newpassword) {
             return res.status(400).json({ error: 'Both currentPassword and newPassword are required' });

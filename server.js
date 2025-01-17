@@ -10,7 +10,7 @@ app.use(bodyparser.json());
 app.use(cors({
     origin: 'http://127.0.0.1:5501', 
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
-    allowedHeaders: ['Content-Type', 'Authorization']// Allow requests from the frontend port
+    credentials: true, // Allow requests from the frontend port
 }));
 const PORT =process.env.PORT
 

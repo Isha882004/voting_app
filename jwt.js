@@ -32,7 +32,7 @@ const jwtauthmidddle = (req, res, next) => {
 // Function to generate JWT token
 const generatetoken= (userdata) => {
     // Generate a new JWT token using user data
-   try{ return jwt.sign(userdata, process.env.JWT_SECRET, {expiresIn: '1h'});
+   try{ return jwt.sign(userdata, process.env.JWT_SECRET, {expiresIn: '2h'});
 }
 catch (err) {
     console.error('Token Generation Error:', err.message);
