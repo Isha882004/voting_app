@@ -200,7 +200,7 @@
 
         <!-- Add Candidate Button (Visible only to Admins) -->
         <button id="addCandidateBtn" class="add-candidate-btn hidden">Add Candidate</button>
-        
+        <div id="candidateTable"></div>
         <!-- Candidate Table -->
         <table id="candidateTable">
             <thead>
@@ -286,6 +286,21 @@
                 tbody.appendChild(row);
             });
         }
+        document.addEventListener("DOMContentLoaded", () => {
+  const addCandidateBtn = document.getElementById("addCandidateBtn");
+  const token = localStorage.getItem("authToken"); // Retrieve the token from localStorage
+
+  // Check if the user is an admin (optional)
+  const userRole = localStorage.getItem("userRole"); // Assuming you store roles in localStorage
+  if (userRole === "admin" && token) {
+    addCandidateBtn.classList.remove("hidden"); // Show the button for admins
+  }
+
+  // Add click event listener for redirection
+  addCandidateBtn.addEventListener("click", () => {
+    window.location.href = "addCandidate.html";
+  });
+});
 
         // Initialize page
         async function init() {
