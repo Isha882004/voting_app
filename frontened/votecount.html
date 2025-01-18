@@ -3,24 +3,27 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Election Results</title>
+    <title>Vote Count - All Candidates</title>
     <style>
-        /* Reset default styles */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
+        /* General Styles for the page */
         body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
-            color: #333;
+            font-family: 'Arial', sans-serif;
+            background-image: url('votec.jpg'); /* Replace with your background image URL */
+            background-size: cover;
+            background-position: center;
             margin: 0;
             padding: 0;
+            color: #333;
         }
 
-        /* Navbar Styling */
+        .container {
+            width: 60%;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: rgba(255, 255, 255, 0.8); /* Semi-transparent white background */
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
         header {
     position: sticky;
     top: 0;
@@ -65,183 +68,147 @@
             color: black;
             font-weight: bold;
         }
-        /* Main Content Styling */
-        .container {
-            padding: 20px;
-            text-align: center;
-            margin-top: 20px;
-        }
+        .navbar .profile-img {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    border: 2px solid white;
+    object-fit: cover;
+    cursor: pointer;
+  }
 
         h1 {
-            font-size: 36px;
-            color: #333;
+            text-align: center;
+            color: #2e8b57;
+            font-size: 2em;
             margin-bottom: 20px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
         }
 
-        /* Election Results Table Styling */
-        .results-table {
-            width: 80%;
-            margin: 0 auto;
+        table {
+            width: 100%;
+            margin-top: 20px;
             border-collapse: collapse;
-            background-color: #fff;
-            border-radius: 10px;
-            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+            background-color: white;
+            border-radius: 8px;
+            overflow: hidden;
         }
 
-        .results-table th, .results-table td {
-            padding: 15px;
-            text-align: left;
-            font-size: 18px;
+        th, td {
+            padding: 12px;
+            text-align: center;
+            border-bottom: 1px solid #ddd;
         }
 
-        .results-table th {
-            background-color: #2c3e50;
-            color: #fff;
+        th {
+            background-color: #2e8b57;
+            color: white;
+            font-size: 1.1em;
         }
 
-        .results-table tr:nth-child(even) {
-            background-color: #f2f2f2;
+        td {
+            font-size: 1.1em;
         }
 
-        .results-table td {
-            background-color: #f9f9f9;
+        .vote-count {
+            font-weight: bold;
+            color: #ff6347; /* Tomato color */
         }
-    
-    .sub-container {
-      background-color: white;
-      padding: 20px;
-      border-radius: 10px;
-    }
-    table {
-      width: 100%;
-    }
-    table, th, td {
-      border: 2px solid black;
-      border-collapse: collapse;
-    }
-    th, td {
-      padding: 10px;
-      text-align: center;
-      font-weight: bold;
-    }
-    img {
-      max-width: 90px;
-      max-height: 90px;
-    }
-       
 
-            .results-table {
-                width: 100%;
-                font-size: 16px;
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .container {
+                width: 90%;
             }
+
+            table {
+                font-size: 0.9em;
+            }
+
+            th, td {
+                padding: 10px;
+            }
+        }
     </style>
 </head>
 <body>
-
-    <!-- Navigation Bar -->
-    <header>
-        <nav class="navbar">
-          <div class="logo">Voting App</div>
-          <ul class="nav-links">
-            <li><a href="index.html">Home</a></li>
-            <li><a href="about.html">About</a></li>
-            <li><a href="vote.html">Vote</a></li>
-            <li><a href="votecount.html">Votecount</a></li>
-            <li><a href="signup.html">Signup</a></li>
-            <li><a href="login.html">Login</a></li>
-          </ul>
-        </nav>
-      </header>
-
-    <!-- Main Content -->
+  <header>
+    <nav class="navbar">
+      <div class="logo">Voting App</div>
+      <ul class="nav-links">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="about.html">About</a></li>
+        <li><a href="vote.html">Vote</a></li>
+         <li><a href="votecount.html">Votecount</a></li>
+        <li><a href="signup.html">Signup</a></li>
+        <li><a href="candidatelist.html">Candidate List</a></li>
+      </ul>
+    </nav>
+  </header>
     <div class="container">
-        <h1>Election Results</h1>
-        
-        <!-- Election Results Table -->
-        
-            <div class="sub-container">
+        <h1>Vote Count for All Candidates</h1>
+        <div id="message" class="message"></div>
+        <table id="candidateTable">
             <thead>
                 <tr>
-                    <th>party</th>
-                    <th>Symbol</th>
-                    <th>Vote Count</th>
+                    <th>Candidate Name</th>
+                    <th>Party</th>
+                    <th>Votes</th>
                 </tr>
             </thead>
             <tbody>
-                <!-- Results will be injected here by JavaScript -->
-                <tbody>
-                    <tr>
-                      <td><input type="radio" name="vote" value="Wheel"></td>
-                      <td>BJP</td>
-                      <td><img src="bjp-flag.jpg" alt="Team 1 Symbol"></td>
-                    </tr>
-                    <tr>
-                      <td><input type="radio" name="vote" value="Team 2"></td>
-                      <td>CPI</td>
-                      <td><img src="cpi.jpg" alt="Team 2 Symbol"></td>
-                    </tr>
-                    <tr>
-                      <td><input type="radio" name="vote" value="Team 3"></td>
-                      <td>INC</td>
-                      <td><img src="inc.jpg" alt="Team 3 Symbol"></td>
-                    </tr>
-                    <tr>
-                      <td><input type="radio" name="vote" value="Team 4"></td>
-                      <td>BSP</td>
-                      <td><img src="bsp.jpg" alt="Team 4 Symbol"></td>
-                    </tr>
-                    <tr>
-                      <td><input type="radio" name="vote" value="Team 5"></td>
-                      <td>NCP</td>
-                      <td><img src="ncp.jpg" alt="Team 5 Symbol"></td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
+                <!-- List of candidates will appear here -->
             </tbody>
         </table>
     </div>
 
     <script>
-        // Fetch vote count data from the backend API
-        async function fetchVoteCount() {
+        // JavaScript for handling vote count display logic
+        const token = localStorage.getItem('token'); // Assuming JWT is stored in localStorage
+        const messageElement = document.getElementById('message');
+        const candidateTableElement = document.getElementById('candidateTable').getElementsByTagName('tbody')[0];
+
+        // Fetch all candidates and their vote count from the server
+        async function loadCandidates() {
             try {
-                const response = await fetch('http://localhost:3000/candidate/vote/count');
-                const voteCountData = await response.json();
+                const response = await fetch('http://localhost:3000/candidate', {
+                    method: 'GET',
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                });
 
-                const resultsTableBody = document.getElementById('results-table').getElementsByTagName('tbody')[0];
-
-                // Clear the table first
-                resultsTableBody.innerHTML = '';
-
-                // Populate the table with results data
-                if (voteCountData.length > 0) {
-                    voteCountData.forEach(data => {
-                        const row = document.createElement('tr');
-                        row.innerHTML = `
-                            <td>${data.party}</td>
-                            <td>${data.count}</td>
-                        `;
-                        resultsTableBody.appendChild(row);
-                    });
+                if (response.ok) {
+                    const candidates = await response.json();
+                    candidates.sort((a, b) => b.votecount - a.votecount);  // Sort candidates by vote count in descending order
+                    displayCandidates(candidates);
                 } else {
-                    // If no results, display a message
-                    const row = document.createElement('tr');
-                    row.innerHTML = `<td colspan="2">No election results available yet.</td>`;
-                    resultsTableBody.appendChild(row);
+                    messageElement.innerHTML = "Failed to load candidates";
                 }
             } catch (error) {
-                console.error('Error fetching vote count:', error);
-                const resultsTableBody = document.getElementById('results-table').getElementsByTagName('tbody')[0];
-                const row = document.createElement('tr');
-                row.innerHTML = `<td colspan="2">Error fetching vote count.</td>`;
-                resultsTableBody.appendChild(row);
+                console.error("Error loading candidates:", error);
+                messageElement.innerHTML = "Error loading candidates";
             }
         }
 
-        // Fetch the vote count when the page loads
-        fetchVoteCount();
-    </script>
+        // Display the list of candidates with vote count
+        function displayCandidates(candidates) {
+            candidateTableElement.innerHTML = ''; // Clear the list before displaying
 
+            candidates.forEach(candidate => {
+                const row = candidateTableElement.insertRow();
+
+                row.innerHTML = `
+                    <td>${candidate.name}</td>
+                    <td>${candidate.party}</td>
+                    <td class="vote-count">${candidate.votecount}</td>
+                `;
+            });
+        }
+
+        // Initial load
+        loadCandidates();
+    </script>
 </body>
 </html>

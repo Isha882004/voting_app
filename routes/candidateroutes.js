@@ -44,13 +44,13 @@ const checkmiddle = async (userid) => {
     try{
         if(!(await checkmiddle(req.user.id)))
             return res.status(403).json({message:'user is not admin role no updation'})
-        const candidate = await Candidate.find({}, 'name party age _id');
+        // const candidate = await Candidate.find({}, 'name party age _id');
 
-        // Return the list of candidates
-        res.status(200).json(candidate);
-        const candidateid=req.params.candidateid;
+        // // Return the list of candidates
+        // res.status(200).json(candidate);
+        const Candidateid=req.params.candidateid;
         const updatecandidate=req.body;
-        const response =await Candidate.findByIdAndUpdate(candidateid,updatecandidate,{
+        const response =await Candidate.findByIdAndUpdate(Candidateid,updatecandidate,{
             new: true,
             runValidators:true,
         })
@@ -66,12 +66,12 @@ const checkmiddle = async (userid) => {
   });
   router.delete('/:candidateid',jwtauthmidddle,async(req,res)=>{
     try{
-        if(!checkmiddle(req.user.id))
+        if(!(await checkmiddle(req.user.id)))
             return res.status(403).json({message:'user is not admin role no deletion'})
         
-        const candidateid=req.params.candidateid;
+        const Candidateid=req.params.candidateid;
 
-        const response =await Candidate.findByIdAndDelete(candidateid);
+        const response =await Candidate.findByIdAndDelete(Candidateid);
         if(!response){
             return res.status(404).json({error:'candidate data not update'});
         }
@@ -119,7 +119,7 @@ const checkmiddle = async (userid) => {
 
         const user = await User.findById(userid);
         if(!user){
-            return res.status(404).json({ message: 'user not found' });
+            return res.status(404).json({ message: 'user is not found' });
         }
         if(user.role === 'admin'){
             return res.status(403).json({ message: 'admin is not allowed to give vote'});

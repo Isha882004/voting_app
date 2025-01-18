@@ -1,231 +1,3 @@
-<!-- <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Candidate List</title>
-    <style>
-        table {
-            width: 80%;
-            margin: 20px auto;
-            border-collapse: collapse;
-        }
-        th, td {
-            border: 1px solid #ddd;
-            padding: 10px;
-            text-align: left;
-        }
-        th {
-            background-color: #f4f4f4;
-        }
-        .admin-actions {
-            display: flex;
-            gap: 10px;
-        }
-        .add-candidate-btn {
-            margin: 20px;
-            padding: 10px 20px;
-            background-color: #4caf50;
-            color: white;
-            border: none;
-            cursor: pointer;
-        }
-        .add-candidate-btn:hover {
-            background-color: #45a049;
-        }
-        .hidden {
-            display: none;
-        }
-    </style>
-</head>
-<body>
-    <h1 style="text-align: center;">Candidate List</h1>
-
-    Add Candidate Button (visible only to admin) -->
-    <!-- <button id="addCandidateBtn" class="add-candidate-btn hidden">Add Candidate</button>
-
-    <table>
-        <thead>
-            <tr>
-                <th>Name</th>
-                <th>Party</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody id="candidateTable">
-             Candidate rows will be dynamically added here -->
-      <!---</tbody>
-    </table>
-
-    <script>
-        // Fetch User Profile
-        async function fetchUserProfile() {
-            const token = localStorage.getItem('authToken');
-            console.log('Stored Token:', token);
-
-            if (!token) {
-                alert('No token found. Please log in again.');
-                window.location.href = 'login.html'; // Redirect to login
-                return;
-            }
-
-            try {
-                console.log('Fetching user profile with token...');
-                const response = await fetch('http://localhost:3000/user/profile', {
-                    method: 'GET',
-                    headers: {
-                        'Authorization': 'Bearer ' + token,
-                    },
-                });
-                if (response.ok) {
-                    const user = await response.json(); // Parse the JSON response
-            console.log(user.role, 'this is user role');
-                    const isAdmin = user.role === 'admin';
-
-                    // Show Add Candidate button for admin
-                    if (isAdmin) {
-                        document.getElementById('addCandidateBtn').classList.remove('hidden');
-                        console.log('this is admin profile');
-                    }
-
-                    // Fetch and display candidates
-                    fetchCandidates(isAdmin);
-                } else {
-                    alert(user.message || 'Failed to fetch user profile');
-                    console.error('Error Details:', errorDetails);
-                }
-            } catch (error) {
-                console.error('Error fetching user profile:', error);
-            }
-        }
-
-        // Fetch and Display Candidates
-        async function fetchCandidates(isAdmin) {
-            try {
-                const response = await fetch('http://localhost:3000/candidate', {
-                    method: 'GET'
-                });
-
-                const candidates = await response.json();
-
-                if (response.ok) {
-                    const candidateTable = document.getElementById('candidateTable');
-                    candidateTable.innerHTML = ''; // Clear existing rows
-
-                    candidates.forEach(candidate => {
-                        const row = document.createElement('tr');
-                        row.innerHTML = `
-                            <td>${candidate.name}</td>
-                            <td>${candidate.party}</td>
-                            <td>
-                                ${isAdmin ? `
-                                    <div class="admin-actions">
-                                        <button onclick="editCandidate('${candidate._id}')">Edit</button>
-                                        <button onclick="deleteCandidate('${candidate._id}')">Delete</button>
-                                    </div>
-                                ` : ''}
-                            </td>
-                        `;
-                        candidateTable.appendChild(row);
-                    });
-                } else {
-                    alert(candidates.message || 'Failed to fetch candidates');
-                }
-            } catch (error) {
-                console.error('Error fetching candidates:', error);
-            }
-        }
-
-        // Add Candidate Functionality
-        document.getElementById('addCandidateBtn').addEventListener('click', () => {
-            const name = prompt('Enter candidate name:');
-            const party = prompt('Enter party name:');
-            if (name && party) {
-                addCandidate({ name, party });
-            }
-        });
-
-        async function addCandidate(candidate) {
-            try {
-                const response = await fetch('http://localhost:3000/candidate', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': 'Bearer ' + localStorage.getItem('token')
-                    },
-                    body: JSON.stringify(candidate)
-                });
-
-                const result = await response.json();
-
-                if (response.ok) {
-                    alert('Candidate added successfully');
-                    fetchCandidates(true); // Re-fetch candidates for admin
-                } else {
-                    alert(result.message || 'Failed to add candidate');
-                }
-            } catch (error) {
-                console.error('Error adding candidate:', error);
-            }
-        }
-
-        // Edit Candidate Functionality
-        async function editCandidate(candidateId) {
-            const name = prompt('Enter new candidate name:');
-            const party = prompt('Enter new party name:');
-            if (name && party) {
-                try {
-                    const response = await fetch(`http://localhost:3000/candidate/${candidateId}`, {
-                        method: 'PUT',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'Authorization': 'Bearer ' + localStorage.getItem('token')
-                        },
-                        body: JSON.stringify({ name, party })
-                    });
-
-                    const result = await response.json();
-
-                    if (response.ok) {
-                        alert('Candidate updated successfully');
-                        fetchCandidates(true); // Re-fetch candidates for admin
-                    } else {
-                        alert(result.message || 'Failed to update candidate');
-                    }
-                } catch (error) {
-                    console.error('Error updating candidate:', error);
-                }
-            }
-        }
-
-        // Delete Candidate Functionality
-        async function deleteCandidate(candidateId) {
-            try {
-                const response = await fetch(`http://localhost:3000/candidate/${candidateId}`, {
-                    method: 'DELETE',
-                    headers: {
-                        'Authorization': 'Bearer ' + localStorage.getItem('token')
-                    }
-                });
-
-                const result = await response.json();
-
-                if (response.ok) {
-                    alert('Candidate deleted successfully');
-                    fetchCandidates(true); // Re-fetch candidates for admin
-                } else {
-                    alert(result.message || 'Failed to delete candidate');
-                }
-            } catch (error) {
-                console.error('Error deleting candidate:', error);
-            }
-        }
-
-        // Initialize the page
-        fetchUserProfile();
-    </script>
-</body>
-</html> --> 
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -234,73 +6,221 @@
     <title>Candidate List</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background: url('vote.jpg') no-repeat center center fixed;
+            background-size: cover;
+            color: #ffffff;
         }
+        header {
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    background-color: #333;
+    color: white;
+  }
+        .navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+  }
+  
+  .logo {
+    font-size: 24px;
+    font-weight: bold;
+  }
+  
+  .nav-links {
+    list-style: none;
+    display: flex;
+    gap: 20px;
+    margin: 0;
+    padding: 0;
+  }
+  
+  .nav-links li a {
+    text-decoration: none;
+    color: white;
+    font-size: 16px;
+  }
+  
+  .nav-links li a:hover {
+    text-decoration: underline;
+  }
+        .container-fluid {
+            padding: 10px 20px;
+        }
+        .tagline {
+            font-size: 30px;
+            color: black;
+            font-weight: bold;
+        }
+        .navbar .profile-img {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    border: 2px solid white;
+    object-fit: cover;
+    cursor: pointer;
+  }
+        h1 {
+            text-align: center;
+            margin: 30px 0;
+            font-size: 2.5em;
+            color: #0755ef;
+        }
+
+        .container {
+            padding: 30px;
+            background-color: rgba(255, 255, 255, 0.8); /* Semi-transparent background */
+            border-radius: 8px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            max-width: 1000px;
+            margin: 50px auto;
+        }
+
         table {
-            width: 100%;
+            width: 90%;
+            margin: 0 auto;
             border-collapse: collapse;
-            margin-top: 20px;
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+            background-color: #fff;
+            border-radius: 5px;
         }
+
         table, th, td {
-            border: 1px solid black;
+            border: 1px solid #ddd;
         }
+
         th, td {
-            padding: 10px;
+            padding: 12px;
             text-align: left;
+            font-size: 1.1em;
+            color: #495057;
         }
+
         th {
-            background-color: #f2f2f2;
+            background-color: #f1f3f5;
+            color: #007bff;
+            text-transform: uppercase;
         }
+
+        td {
+            background-color: #f8f9fa;
+        }
+
+        tr:hover {
+            background-color: #e9ecef;
+            transform: scale(1.02);
+            transition: 0.3s ease;
+        }
+
         .admin-actions {
             display: flex;
             gap: 10px;
         }
+
         .admin-actions button {
-            padding: 5px 10px;
+            padding: 6px 12px;
+            background-color: #28a745;
+            border: none;
+            color: white;
             cursor: pointer;
+            font-size: 1em;
+            border-radius: 4px;
+            transition: background-color 0.3s ease;
         }
+
+        .admin-actions button:hover {
+            background-color: #218838;
+        }
+
         .add-candidate-btn {
-            margin: 20px 0;
-            padding: 10px 15px;
-            background-color: green;
+            margin: 20px auto;
+            padding: 12px 20px;
+            background-color: #007bff;
             color: white;
             border: none;
             cursor: pointer;
+            font-size: 1.1em;
+            border-radius: 5px;
+            display: block;
+            text-align: center;
+            width: 200px;
+            transition: background-color 0.3s ease;
         }
+
+        .add-candidate-btn:hover {
+            background-color: #0056b3;
+        }
+
         .hidden {
             display: none;
         }
+
+        @media (max-width: 768px) {
+            table {
+                width: 100%;
+                font-size: 0.9em;
+            }
+
+            .add-candidate-btn {
+                width: 100%;
+                font-size: 1.1em;
+            }
+
+            .admin-actions button {
+                padding: 5px 10px;
+                font-size: 0.9em;
+            }
+        }
     </style>
 </head>
-<body>
-    <h1>Candidate List</h1>
+<body><header>
+    <nav class="navbar">
+      <div class="logo">Voting App</div>
+      <ul class="nav-links">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="about.html">About</a></li>
+        <li><a href="vote.html">Vote</a></li>
+         <li><a href="votecount.html">Votecount</a></li>
+        <li><a href="signup.html">Signup</a></li>
+        <li><a href="candidatelist.html">Candidate List</a></li>
+        <a href="profile.html" id="profileLink">
+            <img id="profileImg" src="profilelogo.webp" alt="Profile Image" class="profile-img">
+          </a>
+      </ul>
+    </nav>
+  </header>
 
-    <!-- Add Candidate Button (Visible only to Admins) -->
-    <button id="addCandidateBtn" class="add-candidate-btn hidden">Add Candidate</button>
+    <div class="container">
+        <h1>Candidate List</h1>
 
-    <!-- Candidate Table -->
-    <table id="candidateTable">
-        <thead>
-            <tr>
-                <th>Name</th>
-                <th>Party</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            <!-- Candidates will be dynamically added here -->
-        </tbody>
-    </table>
+        <!-- Add Candidate Button (Visible only to Admins) -->
+        <button id="addCandidateBtn" class="add-candidate-btn hidden">Add Candidate</button>
+        
+        <!-- Candidate Table -->
+        <table id="candidateTable">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Party</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody id="candidateTableBody">
+                <!-- Candidates will be dynamically added here -->
+            </tbody>
+        </table>
+    </div>
 
     <script>
-        const token = "YOUR_JWT_TOKEN"; // Replace with the actual stored token
+        const token = localStorage.getItem('authToken'); // Retrieve the token from localStorage
 
         // Fetch user profile
         async function fetchUserProfile() {
-            const token = localStorage.getItem('authToken');
-            console.log('Stored Token:', token);
-
             if (!token) {
                 alert('No token found. Please log in again.');
                 window.location.href = 'login.html'; // Redirect to login
@@ -314,16 +234,11 @@
                     }
                 });
 
-                
                 if (response.ok) {
                     const data = await response.json();
-                    console.log('User Data:', data);
-                    const user= data.user;
-                    console.log("User Profile:", user);
-                    return user;
-                    
+                    return data.user;
                 } else {
-                    console.error("Error fetching profile:", user.message);
+                    console.error("Error fetching profile:", response.message);
                 }
             } catch (error) {
                 console.error("Error fetching profile:", error);
@@ -340,155 +255,36 @@
                 });
 
                 const candidates = await response.json();
-                if (response.ok) {
-                    console.log("Candidates:", candidates);
-                    return candidates;
-                    
-                } else {
-                    console.error("Error fetching candidates:", candidates.message);
-                }
+                return candidates;
             } catch (error) {
                 console.error("Error fetching candidates:", error);
             }
         }
-        // Initialize page
 
         // Render candidate table
         function renderCandidateTable(candidates, isAdmin) {
-            const tbody = document.querySelector("#candidateTable tbody");
-            tbody.innerHTML = ""; // Clear existing rows
+            const tbody = document.getElementById("candidateTableBody");
+            tbody.innerHTML = ''; // Clear existing rows
 
             candidates.forEach(candidate => {
                 const row = document.createElement("tr");
-        
 
                 row.innerHTML = `
-    <td>${candidate.name}</td>
-    <td>${candidate.party}</td>
-    <td>
-        ${
-            isAdmin
-                ? `<div class="admin-actions">
-                    <button class="edit-btn" onclick="editCandidate('${candidate.candidateid}')">Edit</button>
-                    <button onclick="deleteCandidate('${candidate.candidateid}')">Delete</button>
-                </div>`
-                : "N/A"
-        }
-    </td>
-`;
-
-tbody.appendChild(row);
-
-            });
-        }
-        // Initialize page
-
-
-
-
-        // Add candidate functionality (Admins only)
-        
-        document.getElementById("addCandidateBtn").addEventListener("click", async () => {
-            const name = prompt("Enter Candidate Name:");
-            const party = prompt("Enter Candidate Party:");
-            const age = prompt("Enter Candidate age:");
-            const token = localStorage.getItem('authToken');
-            console.log('Stored Token:', token);
-
-            if (!token) {
-                alert('No token found. Please log in again.');
-                window.location.href = 'login.html'; // Redirect to login
-                return;
-            }
-
-            if (name && party && age) {
-                try {
-                    const response = await fetch("http://localhost:3000/candidate/", {
-                        method: "POST",
-                        headers: {
-                            "Content-Type": "application/json",
-                            Authorization: `Bearer ${token}`
-                        },
-                        body: JSON.stringify({ name, party,age })
-                    });
-
-                    const result = await response.json();
-                    if (response.ok) {
-                        alert("Candidate added successfully!");
-                        init(); // Refresh the table
-                    } else {
-                        alert(result.message || "Failed to add candidate.");
-                    }
-                } catch (error) {
-                    console.error("Error adding candidate:", error);
-                }
-            }
-        });
-
-        // Edit candidate functionality (Admins only)
-        async function editCandidate(candidateid) {
-            const name = prompt("change Candidate Name:");
-            const party = prompt("change Candidate Party:");
-            const age = prompt("change Candidate age:");
-            console.log('heelo')
-            if (!candidateid || candidateid === "undefined") {
-        alert("Invalid Candidate ID!");
-        return;
-    }
-            const token = localStorage.getItem('authToken');
-            console.log('Stored Token:', token);
-
-            if (!token) {
-                alert('No token found. Please log in again.');
-                window.location.href = 'login.html'; // Redirect to login
-                return;
-            }
-            if (name && party && age) {
-                try {
-                    const response = await fetch(`http://localhost:3000/candidate/${candidateId}`, {
-                        method: "PUT",
-                        headers: {
-                            "Content-Type": "application/json",
-                            Authorization: `Bearer ${token}`
-                        },
-                        body: JSON.stringify({ name, party ,age})
-                    });
-
-                    const result = await response.json();
-                    if (response.ok) {
-                        alert("Candidate updated successfully!");
-                        init(); // Refresh the table
-                    } else {
-                        alert(result.message || "Failed to update candidate.");
-                    }
-                } catch (error) {
-                    console.error("Error updating candidate:", error);
-                }
-            }
-        }
-
-        // Delete candidate functionality (Admins only)
-        async function deleteCandidate(candidateId) {
-            if (confirm("Are you sure you want to delete this candidate?")) {
-                try {
-                    const response = await fetch(`http://localhost:3000/candidate/${candidateId}`, {
-                        method: "DELETE",
-                        headers: {
-                            Authorization: `Bearer ${token}`
+                    <td>${candidate.name}</td>
+                    <td>${candidate.party}</td>
+                    <td>
+                        ${
+                            isAdmin
+                            ? `<div class="admin-actions">
+                                <button class="edit-btn" onclick="editCandidate('${candidate._id}')">Edit</button>
+                                <button onclick="deleteCandidate('${candidate._id}')">Delete</button>
+                            </div>`
+                            : "N/A"
                         }
-                    });
-
-                    const result = await response.json();
-                    if (response.ok) {
-                        alert("Candidate deleted successfully!");
-                        init(); // Refresh the table
-                    } else {
-                        alert(result.message || "Failed to delete candidate.");
-                    }
-                } catch (error) {
-                    console.error("Error deleting candidate:", error);
-                }
-            }
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
         }
 
         // Initialize page
@@ -504,6 +300,56 @@ tbody.appendChild(row);
 
                 // Render candidate table
                 renderCandidateTable(candidates, isAdmin);
+            }
+        }
+
+        // Edit candidate functionality (Admins only)
+        async function editCandidate(_id) {
+            const name = prompt("Change Candidate Name:");
+            const party = prompt("Change Candidate Party:");
+
+            if (!_id || !_id.trim()) {
+                alert("Invalid Candidate ID!");
+                return;
+            }
+
+            if (name && party) {
+                const response = await fetch(`http://localhost:3000/candidate/${_id}`, {
+                    method: "PUT",
+                    headers: {
+                        "Content-Type": "application/json",
+                        Authorization: `Bearer ${token}`
+                    },
+                    body: JSON.stringify({ name, party })
+                });
+
+                const result = await response.json();
+                if (response.ok) {
+                    alert("Candidate updated successfully!");
+                    init();  // Refresh the table
+                } else {
+                    alert(result.message || "Failed to update candidate.");
+                }
+            }
+        }
+
+        // Delete candidate functionality (Admins only)
+        async function deleteCandidate(_id) {
+            if (confirm("Are you sure you want to delete this candidate?")) {
+                const response = await fetch(`http://localhost:3000/candidate/${_id}`, {
+                    method: "DELETE",
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                });
+
+                const result = await response.json();
+                if (response.ok) {
+                    alert("Candidate deleted successfully!");
+                    init(); // Refresh the table
+                } else {
+                    alert(result.message || "Failed to delete candidate.");
+                }
             }
         }
 

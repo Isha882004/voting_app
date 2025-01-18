@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Add Candidate</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f9f9f9;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .container {
+      background: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      width: 400px;
+    }
+
+    h2 {
+      text-align: center;
+      margin-bottom: 20px;
+      color: #333;
+    }
+
+    .form-group {
+      margin-bottom: 15px;
+    }
+
+    .form-group label {
+      display: block;
+      font-weight: bold;
+      margin-bottom: 5px;
+      color: #555;
+    }
+
+    .form-group input {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+
+    .btn {
+      width: 100%;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      padding: 10px;
+      font-size: 16px;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    .btn:hover {
+      background-color: #45a049;
+    }
+
+    .error {
+      color: red;
+      font-size: 14px;
+      margin-top: 5px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Add Candidate</h2>
+    <form id="addCandidateForm">
+      <div class="form-group">
+        <label for="name">Candidate Name</label>
+        <input type="text" id="name" name="name" placeholder="Enter candidate name" required>
+      </div>
+      <div class="form-group">
+        <label for="party">Candidate Party</label>
+        <input type="text" id="party" name="party" placeholder="Enter candidate party" required>
+      </div>
+      <div class="form-group">
+        <label for="age">Candidate Age</label>
+        <input type="number" id="age" name="age" placeholder="Enter candidate age" required>
+      </div>
+      <button type="submit" class="btn">Add Candidate</button>
+      <div id="errorMessage" class="error"></div>
+    </form>
+  </div>
+
+  <script>
+    document.getElementById("addCandidateForm").addEventListener("submit", async (event) => {
+      event.preventDefault();
+
+      const name = document.getElementById("name").value.trim();
+      const party = document.getElementById("party").value.trim();
+      const age = document.getElementById("age").value.trim();
+      const token = localStorage.getItem("authToken");
+
+      // Clear any previous error messages
+      document.getElementById("errorMessage").textContent = "";
+
+      if (!token) {
+        alert("No token found. Please log in again.");
+        window.location.href = "login.html";
+        return;
+      }
+
+      if (name && party && age) {
+        try {
+          const response = await fetch("http://localhost:3000/candidate/", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify({ name, party, age }),
+          });
+
+          const result = await response.json();
+
+          if (response.ok) {
+            alert("Candidate added successfully!");
+            document.getElementById("addCandidateForm").reset(); // Reset the form
+          } else {
+            document.getElementById("errorMessage").textContent = result.message || "Failed to add candidate.";
+          }
+        } catch (error) {
+          console.error("Error adding candidate:", error);
+          document.getElementById("errorMessage").textContent = "An unexpected error occurred.";
+        }
+      }
+    });
+  </script>
+</body>
+</html>

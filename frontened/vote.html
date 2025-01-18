@@ -1,45 +1,31 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <!-- Bootstrap CSS -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
-  <title>Voting Page</title>
-  <style>
-    /* Add your custom styles here */
-    .container {
-      background-color:#899499; /* Adjust background color as needed */
-      padding: 20px;
-      border-radius: 10px;
-    }
-    .sub-container {
-      background-color: white;
-      padding: 20px;
-      border-radius: 10px;
-    }
-    table {
-      width: 100%;
-    }
-    table, th, td {
-      border: 2px solid black;
-      border-collapse: collapse;
-    }
-    th, td {
-      padding: 10px;
-      text-align: center;
-      font-weight: bold;
-    }
-    img {
-      max-width: 90px;
-      max-height: 90px;
-    }
-    .submit-btn {
-      margin-top: 20px;
-      text-align: center;
-    }
-    header {
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vote for a Candidate</title>
+    <style>
+        /* CSS for Styling the Page */
+        body {
+            font-family: 'Arial', sans-serif;
+            background-image: url('vote.jpg');
+            background-size: cover;
+            background-position: center;
+            margin: 0;
+            padding: 0;
+            color: #333;
+        }
+
+        /* Container for content */
+        .container {
+            width: 80%;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: rgba(255, 255, 255, 0.9); /* Semi-transparent white background */
+            border-radius: 8px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1); /* Soft shadow effect */
+        }
+        header {
     position: sticky;
     top: 0;
     z-index: 1000;
@@ -83,13 +69,113 @@
             color: black;
             font-weight: bold;
         }
+        .navbar .profile-img {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    border: 2px solid white;
+    object-fit: cover;
+    cursor: pointer;
+  }
+
+        h1 {
+            text-align: center;
+            font-size: 2.5em;
+            color: #2e8b57; /* Green color */
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 30px;
+        }
+
+        /* Styling for each candidate box */
+        .candidate {
+            border: 1px solid #ddd;
+            padding: 20px;
+            margin: 15px 0;
+            background-color: #f9f9f9;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease-in-out;
+        }
+
+        /* Hover effect for candidate card */
+        .candidate:hover {
+            transform: translateY(-5px); /* Slight upward shift on hover */
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+        }
+
+        /* Candidate Info Section */
+        .candidate div {
+            flex: 1;
+            padding-right: 20px;
+        }
+
+        .candidate h3 {
+            font-size: 1.4em;
+            margin-bottom: 5px;
+            color: #333;
+        }
+
+        .candidate p {
+            font-size: 1.1em;
+            color: #555;
+            margin: 5px 0;
+        }
+
+        /* Styling for the vote button */
+        button {
+            background-color: #4CAF50; /* Green background */
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            cursor: pointer;
+            font-size: 1.1em;
+            border-radius: 5px;
+            transition: background-color 0.3s ease-in-out;
+            text-transform: uppercase;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        /* Message Box */
+        #message {
+            text-align: center;
+            margin-top: 30px;
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #333;
+            transition: opacity 0.3s ease-in-out;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .container {
+                width: 90%;
+            }
+
+            h1 {
+                font-size: 2em;
+            }
+
+            .candidate {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            button {
+                width: 100%;
+                padding: 15px 0;
+                font-size: 1.2em;
+            }
+        }
     </style>
-  </style>
 </head>
 <body>
-
-  <!-- Navigation Bar -->
-  <!-- Navigation Bar -->
   <header>
     <nav class="navbar">
       <div class="logo">Voting App</div>
@@ -99,110 +185,153 @@
         <li><a href="vote.html">Vote</a></li>
          <li><a href="votecount.html">Votecount</a></li>
         <li><a href="signup.html">Signup</a></li>
-        <li><a href="useless.html">Signup</a></li>
-        <li><a href="login.html">Login</a></li>
+        <li><a href="candidatelist.html">Candidate List</a></li>
+        <a href="profile.html" id="profileLink">
+          <img id="profileImg" src="profilelogo.webp" alt="Profile Image" class="profile-img">
+        </a>
       </ul>
     </nav>
   </header>
-  
-
-  <!-- Your content for the voting page goes here -->
-  <div class="container mt-3">
-    <h1 class="text-center mb-4">Online Voting System</h1>
-
-    <div class="sub-container">
-      <table>
-        <thead>
-          <tr>
-            <th>Vote</th>
-            <th>Party</th>
-            <th>Symbol</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td><input type="radio" name="vote" value="Wheel"></td>
-            <td>BJP</td>
-            <td><img src="bjp-flag.jpg" alt="Team 1 Symbol"></td>
-          </tr>
-          <tr>
-            <td><input type="radio" name="vote" value="Team 2"></td>
-            <td>INC</td>
-            <td><img src="inc.jpg" alt="Team 2 Symbol"></td>
-          </tr>
-          <tr>
-            <td><input type="radio" name="vote" value="Team 3"></td>
-            <td>BSP</td>
-            <td><img src="bsp.jpg" alt="Team 3 Symbol"></td>
-          </tr>
-          <tr>
-            <td><input type="radio" name="vote" value="Team 4"></td>
-            <td>CPI</td>
-            <td><img src="cpi.jpg" alt="Team 4 Symbol"></td>
-          </tr>
-          <tr>
-            <td><input type="radio" name="vote" value="Team 5"></td>
-            <td>NCP</td>
-            <td><img src="ncp.jpg" alt="Team 5 Symbol"></td>
-          </tr>
-        </tbody>
-      </table>
+    <div class="container">
+        <h1>Vote for Your Favorite Candidate</h1>
+        <div id="candidateList">
+            <!-- List of candidates will appear here -->
+        </div>
+        <div id="message"></div>
     </div>
-  
+    <script>
+        // JavaScript for handling voting logic
+        const token = localStorage.getItem('token'); // Assuming JWT is stored in localStorage
+        const messageElement = document.getElementById('message');
+        const candidateListElement = document.getElementById('candidateList');
 
-
-  <!-- Bootstrap JavaScript (optional) -->
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
-<div class="submit-btn">
-<button class="btn btn-primary" onclick="submitVote()">Submit Vote</button>
-</div>
-</div>
-
-<!-- Bootstrap JavaScript (optional) -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
-
-<script>
-function submitVote() {
-  const selectedVote = document.querySelector('input[name="vote"]:checked');
-  if (selectedVote) {
-    const selectedValue = selectedVote.value;
-    alert("Vote submitted successfully for " + selectedValue + "!");
-  } else {
-    alert("Please select a vote before submitting.");
-  }
-}
-async function vote(candidateId) {
+        // Fetch candidates from the server and display them
+        async function loadCandidates() {
             try {
-                const token = localStorage.getItem('token');
-                if (!token) {
-                    alert('Please login to vote');
-                    return;
-                }
-
-                const response = await fetch(`http://localhost:3000/vote/${candidateId}`, {
-                    method: 'GET', // Assuming a GET request for voting
+                const response = await fetch('http://localhost:3000/candidate', {
+                    method: 'GET',
                     headers: {
-                        'Authorization': `Bearer ${token}`,
-                    },
+                        Authorization: `Bearer ${token}`
+                    }
                 });
 
-                const data = await response.json();
-
                 if (response.ok) {
-                    alert(data.message);  // Vote recorded successfully
+                    const candidates = await response.json();
+                    displayCandidates(candidates);
                 } else {
-                    alert(data.message);  // Error (e.g., user already voted)
+                    messageElement.innerHTML = "Failed to load candidates";
                 }
             } catch (error) {
-                console.error('Error voting:', error);
+                console.error("Error loading candidates:", error);
+                messageElement.innerHTML = "Error loading candidates";
             }
         }
 
-        // Fetch the list of candidates when the page loads
-        fetchCandidates();
+        // Display the list of candidates
+        function displayCandidates(candidates) {
+            candidateListElement.innerHTML = ''; // Clear the list before displaying
+
+            candidates.forEach(candidate => {
+                const candidateElement = document.createElement('div');
+                candidateElement.classList.add('candidate');
+
+                candidateElement.innerHTML = `
+                    <div>
+                        <h3>${candidate.name}</h3>
+                        <p>Party: ${candidate.party}</p>
+                        <p>Age: ${candidate.age}</p>
+                        <p>Votes: ${candidate.votecount}</p>
+                    </div>
+                    <button onclick="voteForCandidate('${candidate._id}')">Vote</button>
+                `;
+                
+                candidateListElement.appendChild(candidateElement);
+            });
+        }
+        async function fetchUserProfile() {
+          const token = localStorage.getItem('authToken'); 
+            if (!token) {
+                alert('No token found. Please log in again.');
+                window.location.href = 'login.html'; // Redirect to login
+                return;
+            }
+
+            try {
+                const response = await fetch("http://localhost:3000/user/profile", {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    return data.user;
+                } else {
+                    console.error("Error fetching profile:", response.message);
+                }
+            } catch (error) {
+                console.error("Error fetching profile:", error);
+            }
+        }
+
+
+        // Voting for a candidate
+        async function voteForCandidate(_id) {
+            const token = localStorage.getItem('authToken');  // Ensure you're getting the token
+            console.log('Token in vote:', token);  // Debugging line to verify token
+
+            if (!token) {
+                alert('Token not found. Please log in again.');
+                window.location.href = 'login.html';  // Redirect to login if token is not found
+                return;
+            }
+            
+            const user = await fetchUserProfile(); 
+            if (!user) return; // Exit if user profile couldn't be fetched
+
+// Check if the user is an admin
+if (user.role === 'admin') {
+    alert("Admins cannot vote.");
+    return;
+}
+
+// Check if the user has already voted
+if (user.isvoted) {
+    alert("You have already voted.");
+    return;
+}
+            
+
+            try {
+                const response = await fetch(`http://localhost:3000/candidate/vote/${_id}`, {
+                    method: 'GET',
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                });
+
+                const result = await response.json();
+                if (response.ok) {
+                    alert("Vote recorded successfully!");
+                    loadCandidates(); // Reload candidates after voting
+                }  else {
+                    // Handle different error messages
+                    if (result.message === 'Admin is not allowed to give vote') {
+                        alert("Admins cannot vote.");
+                    } else if (result.message === 'You have already voted') {
+                        alert("You have already voted.");
+                    } else {
+                        messageElement.innerHTML = result.message || "Failed to vote";
+                    }
+                  }
+            } catch (error) {
+                console.error("Error voting:", error);
+                messageElement.innerHTML = "Error voting. Please try again.";
+            }
+        }
+
+        // Initial load
+        loadCandidates();
     </script>
-</body>
-</html>
-</script>
 </body>
 </html>

@@ -42,6 +42,14 @@ body {
   .nav-links li a:hover {
     text-decoration: underline;
   }
+  .navbar .profile-img {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    border: 2px solid white;
+    object-fit: cover;
+    cursor: pointer;
+  }
   
   /* Hero Section */
   .hero-section {
